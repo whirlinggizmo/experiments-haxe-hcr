@@ -1,0 +1,16 @@
+-cp src
+-cp scripts
+
+# for access to Script class without the package namespace 
+-cp src/scripting
+
+-D use-remote-pak
+-D resourcesPath=res
+-D js-es=6
+-D message-reporting=pretty
+
+#-lib heaps 
+
+
+
+

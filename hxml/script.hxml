@@ -1,0 +1,13 @@
+
+hxml/common.hxml
+--each
+
+-D source-map-content
+-D source-map
+-D enable-script-reload
+--debug
+--dce no
+
+# the script class and destinations file should be included as an argument in the command line
+# e.g.: "haxe hxml/script.hxml -js out/js/scripts/Test.js Test"
+# 'Test' is the name of the script class (without the .hx extension, in the 'scripts' directory)

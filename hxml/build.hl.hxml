@@ -1,0 +1,19 @@
+hxml/common.hxml
+--each
+
+# generate the list of all script files
+--macro ScriptGenerator.generateScriptsList('scripts', 'gen/scripts.hxml')
+
+--next
+--cmd echo -n "Building .hl target..."
+
+--next
+-lib hlsdl
+-lib heaps
+--main Main
+-hl out/hl/main.hl
+
+# include the script files as part of the build
+gen/scripts.hxml
+
+--cmd echo "Build complete."

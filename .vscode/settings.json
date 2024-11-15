@@ -1,0 +1,11 @@
+{
+    "haxe.exclude": [
+        "zpp_nape",
+        "unused"
+    ],
+    "haxe.configurations": [
+        [
+            "hxml/vscode.hxml"
+        ]
+    ]
+}

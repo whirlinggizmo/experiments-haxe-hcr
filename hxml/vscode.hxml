@@ -1,0 +1,12 @@
+# This file only exists to let the haxe language server for vscode know about the type and class paths
+# It is not intended to be used as a build file!
+# Use the build.hxml files in the project root to build the project
+-cp src
+-cp scripts
+
+# for access to Script class without the package namespace 
+-cp src/scripting
+-D use_remote_pak
+-D resourcesPath=res
+--library heaps
+--js out/js/main.js

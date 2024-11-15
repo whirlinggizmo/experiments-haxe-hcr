@@ -1,0 +1,24 @@
+
+hxml/common.hxml
+--each
+
+# generate the list of all script files
+--macro ScriptGenerator.generateScriptsList('scripts', 'gen/scripts.hxml')
+
+#--next
+#--cmd echo -n "Building .js target..."
+
+#--next
+#-lib heaps
+#-js out/js/main.js
+#--dce full
+--main Main
+# include the scripts as part of the build
+gen/scripts.hxml
+
+--interp
+#--next
+#--cmd echo "OK"
+
+#--next
+--cmd echo "Build complete."

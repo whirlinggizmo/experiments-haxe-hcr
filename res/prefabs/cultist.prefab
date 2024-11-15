@@ -1,0 +1,23 @@
+{
+	"type": "prefab",
+	"children": [
+		{
+			"type": "model",
+			"name": "cultist",
+			"source": "models/cultist.fbx",
+			"x": -4.2,
+			"y": -4.5
+		},
+		{
+			"type": "light",
+			"name": "light_0",
+			"z": 2.46,
+			"rotationY": 27.2,
+			"rotationZ": -118.9,
+			"kind": "Directional",
+			"power": 3.94,
+			"range": 10,
+			"zNear": 0.02
+		}
+	]
+}
