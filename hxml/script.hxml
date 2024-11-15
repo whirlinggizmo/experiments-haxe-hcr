@@ -4,7 +4,6 @@ hxml/common.hxml
 
 -D source-map-content
 -D source-map
--D enable-script-reload
 --debug
 --dce no
 
