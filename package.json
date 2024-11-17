@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "npm-run-all --parallel serve",
     "prepublishOnly": "npm run build && npm run test",
-    "clean": "rimraf ./dist",
+    "clean": "rimraf ./dist ./out",
     "serve": "vite serve",
     "build": "npm run clean && haxe hxml/build.js.hxml && vite build",
     "build:dev": "npm run clean && haxe hxml/build.js.hxml && mkdir -p dist/ && cp -r out/js/* dist/ && cp -r public/* dist/ && cp index.html dist/index.html && sed -i 's/out\\/js\\///g' dist/index.html",

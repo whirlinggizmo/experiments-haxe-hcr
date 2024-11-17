@@ -6,8 +6,8 @@ import remotePak.RemotePak;
 
 class Main {
 	public static function ready() {
-		new tests.ScriptTest();
-		// new MainApp();
+		// new tests.ScriptTest();
+		new MainApp();
 	}
 
 	public static function main() {
