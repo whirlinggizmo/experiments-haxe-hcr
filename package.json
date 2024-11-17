@@ -1,5 +1,5 @@
 {
-  "name": "hcr",
+  "name": "heaps-iso-chests",
   "version": "1.0.0",
   "type": "module",
   "exports": "./dist/index.js",
@@ -10,7 +10,9 @@
     "clean": "rimraf ./dist",
     "serve": "vite serve",
     "build": "npm run clean && haxe hxml/build.js.hxml && vite build",
-    "preview": "vite preview",
+    "build:dev": "npm run clean && haxe hxml/build.js.hxml && mkdir -p dist/ && cp -r out/js/* dist/ && cp -r public/* dist/ && cp index.html dist/index.html && sed -i 's/out\\/js\\///g' dist/index.html",
+    "deploy": "npm run build && rsync -azP --mkpath --delete dist/ dev:testbed/haxe/${npm_package_name}/",
+    "preview": "vite preview --port 8000",
     "test": "npm run build"
   },
   "author": "Rob Knopf",

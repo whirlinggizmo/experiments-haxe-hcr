@@ -27,14 +27,15 @@ async function compileMain() {
     }
     isCompilingMain = true;
     return new Promise((resolve, reject) => {
-        const cmd = `${options.haxeExecutable} ${options.hxmlMain} -js ${path.join(options.outputDir, options.outputFile)}`;
+        const cmd = `${options.haxeExecutable} ${options.hxmlMain} -${options.outputTarget} ${path.join(options.outputDir, options.outputTarget, options.outputFile)}`;
         console.log(`Compiling main with command: ${cmd}`);
         exec(cmd, (err, stdout, stderr) => {
             isCompilingMain = false;
             if (err) {
+                //console.error(err.message);
                 return reject(stderr);
             }
-            console.log(`Compiled main: ${path.join(options.outputDir, options.outputFile)}`);
+            console.log(`Compiled main: ${path.join(options.outputDir, options.outputTarget, options.outputFile)}`);
 
             resolve(stdout);
         });
@@ -50,8 +51,8 @@ async function compileScript(relativeScriptName) {
 
         const className = relativeScriptName.split('/').pop().slice(0, -3);
         const classPath = relativeScriptName.split(`${options.scriptsDir}/`).pop().slice(0, -3).replace(/\//g, '.');
-        const outputName = relativeScriptName.slice(0, -3) + '.js';
-        const cmd = `${options.haxeExecutable} ${options.hxmlScript} -js ${options.outputDir}/${outputName} ${classPath}`;
+        const outputName = relativeScriptName.slice(0, -3) + `.${options.outputTarget}`;
+        const cmd = `${options.haxeExecutable} ${options.hxmlScript} -${options.outputTarget} ${path.join(options.outputDir, options.outputTarget, outputName)} ${classPath}`;
         console.log(`Compiling script with command: ${cmd}`);
         exec(cmd, (err, stdout, stderr) => {
             if (err) {
@@ -66,7 +67,6 @@ async function compileScript(relativeScriptName) {
 // Compile main and all scripts
 async function compileAll() {
     try {
-        await cleanOutputDir();
         await compileMain();
         const haxeFiles = getHaxeFiles(options.scriptsDir);
         await Promise.all(haxeFiles.map(haxeFile => {
@@ -98,6 +98,7 @@ export function haxe(opts = {}) {
         sourceDir: 'src',
         scriptsDir: 'scripts',
         outputDir: 'out',
+        outputTarget: 'js',
         outputFile: 'main.js',
         hxmlScript: 'script.hxml',
         hxmlMain: 'main.hxml',
@@ -110,6 +111,7 @@ export function haxe(opts = {}) {
     options.scriptsDir = options.scriptsDir.replace(/\/$/, '');
     options.outputDir = options.outputDir.replace(/\/$/, '');
 
+
     return {
         name: 'haxe',
         apply: 'serve',
@@ -117,15 +119,18 @@ export function haxe(opts = {}) {
             const relativePath = path.relative(__dirname, file);
             const isInHaxeSrc = file.startsWith(options.sourceDir) && file.endsWith('.hx');
             const isInScripts = file.startsWith(options.scriptsDir) && file.endsWith('.hx');
-            const isHXML = file.endsWith('.hxml');
+            const isHXML = (relativePath == options.hxmlMain) || (relativePath == options.hxmlScript);
+            //console.log(`Change detected for: ${relativePath}`);
 
-            console.log(`Change detected for: ${relativePath}`);
+            //console.log('isInHaxeSrc:', isInHaxeSrc);
+            //console.log('isInScripts:', isInScripts);
+            //console.log('isHXML:', isHXML);
 
             if (isHXML) {
-                console.log('HXML file changed, recompiling all...');
+                console.log(`HXML file ${relativePath} changed, recompiling all...`);
                 try {
                     await compileAll();
-                    const mainModuleId = path.resolve(__dirname, options.outputDir, options.outputFile);
+                    const mainModuleId = path.resolve(__dirname, options.outputDir, options.outputTarget, options.outputFile);
                     return [server.moduleGraph.getModuleById(mainModuleId)];
                 } catch (e) {
                     console.error(e);
@@ -142,7 +147,7 @@ export function haxe(opts = {}) {
                     // We don't send a manual full-reload, vite will reload when the main module is updated
                     // console.log(`Sending 'full-reload' message for: ${relativePath}`);
                     //server.ws.send({ type: 'full-reload', path: '*' });
-                    const mainModuleId = path.resolve(__dirname, options.outputDir, options.outputFile);
+                    const mainModuleId = path.resolve(__dirname, options.outputDir, options.outputTarget, options.outputFile);
                     return [server.moduleGraph.getModuleById(mainModuleId)];
                 } catch (e) {
                     console.error(e);
@@ -168,7 +173,7 @@ export function haxe(opts = {}) {
                 return []; // Don't hmr the module in the browser, we send a message to the app instead
             }
 
-            console.log('Modules to reload:', modulesToReload);
+            //console.log('Modules to reload:', modulesToReload);
             return modules;
         },
         async configureServer(server) {
@@ -180,7 +185,7 @@ export function haxe(opts = {}) {
                         //'**/node_modules/**',
                         path.resolve(__dirname, 'dist') + "/**",
                         // Ignore the output directory, we don't want to watch the .js files (we watch .hx files that generate the .js)
-                        path.resolve(__dirname, options.outputDir) + "/**",
+                        path.resolve(__dirname, options.outputDir, options.outputTarget) + "/**",
                     ],
                 };
                 server.watcher.add(options.sourceDir + "/**/*.hx");  // Watch the source directory for changes
@@ -189,6 +194,7 @@ export function haxe(opts = {}) {
 
             try {
                 console.log('Running initial compilation of main and scripts...');
+                //await cleanOutputDir();
                 await compileAll();  // Server start is deferred until all files are compiled
             } catch (e) {
                 console.error('Error during initial compilation:', e);

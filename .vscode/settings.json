@@ -5,7 +5,15 @@
     ],
     "haxe.configurations": [
         [
-            "hxml/vscode.hxml"
+            "hxml/build.js.hxml"
+        ],
+        [
+            "hxml/vscode.hxml",
+            "--hl",
+            "out/hl/main.hl"
+        ],
+        [
+            "hxml/build.hl.hxml",
         ]
     ]
 }

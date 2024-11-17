@@ -1,5 +1,6 @@
 package tests;
 
+import remotePak.RemotePak;
 #if (js)
 import js.Browser;
 #end
@@ -66,7 +67,7 @@ class ScriptTest {
 	}
 
 	public static function main() {
-		//Logger.replaceTrace();
+		// Logger.replaceTrace();
 
 		#if (js && heaps)
 		var window = new hxd.Window(cast Browser.document.getElementById('renderCanvas'), true);
@@ -92,28 +93,28 @@ class ScriptTest {
 		#end
 	}
 	/*
-public static function main() {
-		trace('Main.main()');
-		// Logger.replaceTrace();
+		public static function main() {
+			trace('Main.main()');
+			// Logger.replaceTrace();
 
-		#if (js && heaps)
-		var window = new hxd.Window(cast Browser.document.getElementById('renderCanvas'), true);
-		window.setCurrent();
-		#end
+			#if (js && heaps)
+			var window = new hxd.Window(cast Browser.document.getElementById('renderCanvas'), true);
+			window.setCurrent();
+			#end
 
-		#if use_remote_pak
-		trace('Using remote resource paks');
-		RemotePak.initRemotePak();
-		RemotePak.addPakFromUrl("res/res.pak", (pakFile) -> {
+			#if use_remote_pak
+			trace('Using remote resource paks');
+			RemotePak.initRemotePak();
+			RemotePak.addPakFromUrl("res/res.pak", (pakFile) -> {
+				ready();
+			}, (e) -> {
+				trace(e);
+			});
+			#else
+			trace('(Using embedded resource pak)');
+			hxd.Res.initEmbed();
 			ready();
-		}, (e) -> {
-			trace(e);
-		});
-		#else
-		trace('(Using embedded resource pak)');
-		hxd.Res.initEmbed();
-		ready();
-		#end
-	}
-*/
+			#end
+		}
+	 */
 }

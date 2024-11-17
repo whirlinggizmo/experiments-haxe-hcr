@@ -9,7 +9,7 @@ hxml/common.hxml
 --cmd echo -n "Building .lua target..."
 
 --next
-#-lib heaps
+-lib heaps
 -lua out/lua/main.lua
 --dce full
 --main Main

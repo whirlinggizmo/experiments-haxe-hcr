@@ -7,9 +7,10 @@
 -D use-remote-pak
 -D resourcesPath=res
 -D js-es=6
--D message-reporting=pretty
 
-#-lib heaps 
+#-D message-reporting=pretty
+
+
 
 
 

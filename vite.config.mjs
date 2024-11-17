@@ -5,6 +5,7 @@ import fs from 'fs';
 import os from 'os';
 import { haxe } from './vite-plugin-haxe-watcher.js';
 import viteRestart from 'vite-plugin-restart';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 
 // Use the dotenv package to load environment variables from a .env file
@@ -116,10 +117,11 @@ logger.warn = (message, options) => {
   originalWarn(message, options);
 }
 
+const outputTarget = 'js';
 const srcDir = 'src';
 const scriptsDir = 'scripts';
-const outputDir = 'out/js';
-const outputFile = 'main.js';
+const outputDir = 'out';
+const outputFile = 'index.js';
 const hxmlScript = 'hxml/script.hxml';
 const hxmlMain = 'hxml/main.hxml';
 
@@ -136,6 +138,7 @@ export default defineConfig({
       sourceDir: srcDir,
       scriptsDir: scriptsDir,
       outputDir: outputDir,
+      outputTarget: outputTarget,
       outputFile: outputFile,
       hxmlScript: hxmlScript,
       hxmlMain: hxmlMain,
@@ -153,11 +156,12 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     copyPublicDir: true,
-    assetsDir: 'assets',
-    sourcemap: true,
+    assetsDir: '.',
+    sourcemap: false,
+    emptyOutDir: true,
+    target: 'esnext',
     rollupOptions: {
       plugins: [
-        // analyze({ limit: 5 }),
         /*
         visualizer({
           openOptions: {
@@ -170,9 +174,8 @@ export default defineConfig({
           open: true,
           gzipSize: true,
           brotliSize: true
-        }) // last one
-         */
-
+        })
+        */
       ],
       output: {
         entryFileNames: '[name].js',

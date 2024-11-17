@@ -28,10 +28,35 @@
             ]
         },
         {
-            "name": "Javascript (launch)",
+            "name": "Javascript (dev)",
             "request": "launch",
             "type": "chrome",
             "url": "https://localhost:4444",
+            "userDataDir": "${workspaceFolder}/.vscode/vscode-chrome-debug-userdatadir",
+            "linux": {
+                "browserLaunchLocation": "ui", // "ui" will launch browser locally vs "workspace" (or "null") which will launch on the host machine
+                "runtimeExecutable": "/usr/bin/brave-browser"
+            },
+            "windows": {
+                "browserLaunchLocation": "ui",
+                "runtimeExecutable": "C:\\Program Files\\BraveSoftware\\Brave-Browser\\Application\\brave.exe",
+            },
+            "runtimeArgs": [
+                "--new-window",
+                "--remote-debugging-port=9222",
+                "--disable-session-crashed-bubble",
+                "--disable-infobars",
+                "--show-fps-counter",
+            ],
+            "webRoot": "${workspaceRoot}",
+            "sourceMaps": true,
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
+            "name": "Javascript (dist)",
+            "request": "launch",
+            "type": "chrome",
+            "url": "http://localhost:8000",
             "userDataDir": "${workspaceFolder}/.vscode/vscode-chrome-debug-userdatadir",
             "linux": {
                 "browserLaunchLocation": "ui", // "ui" will launch browser locally vs "workspace" (or "null") which will launch on the host machine

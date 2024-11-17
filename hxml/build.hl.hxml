@@ -4,10 +4,11 @@ hxml/common.hxml
 # generate the list of all script files
 --macro ScriptGenerator.generateScriptsList('scripts', 'gen/scripts.hxml')
 
---next
---cmd echo -n "Building .hl target..."
+#--next
+#--cmd echo "Building .hl target..."
 
---next
+#--next
+-D heaps_add_pak_multithreaded
 -lib hlsdl
 -lib heaps
 --main Main

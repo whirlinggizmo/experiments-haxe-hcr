@@ -2,6 +2,7 @@
 import js.Browser;
 import js.html.Document;
 #end
+import remotePak.RemotePak;
 
 class Main {
 	public static function ready() {
@@ -21,7 +22,11 @@ class Main {
 		#if use_remote_pak
 		trace('Using remote resource paks');
 		RemotePak.initRemotePak();
-		RemotePak.addPakFromUrl("https://dev.whirlinggizmo.com/testbed/haxe/heaps-iso-chests/res/res.pak", (pakFile) -> {
+		var url = "res/res.pak";
+		#if !js
+		url = "https://dev.whirlinggizmo.com/testbed/haxe/heaps-iso-chests/" + url;
+		#end
+		RemotePak.addPakFromUrl(url, (pakFile) -> {
 			ready();
 		}, (e) -> {
 			trace(e);

@@ -7,6 +7,7 @@ import h3d.Vector;
 import h3d.Vector4;
 import h3d.col.Bounds;
 import hxd.Math;
+import remotePak.RemotePak;
 
 class MainApp extends hxd.App {
 	var shadow:h3d.pass.DefaultShadowMap;
@@ -62,7 +63,7 @@ class MainApp extends hxd.App {
 				// var model = resource.toModel();
 				return cache.loadLibrary(model);
 			} catch (e) {
-				trace(e);
+				trace('Failed to load model resource: $e');
 				return null;
 			}
 		}
@@ -95,8 +96,8 @@ class MainApp extends hxd.App {
 
 	override function init() {
 		ResourceLoader = hxd.Res.loader;
-		loadModelLibrary('tree');
-		loadModelLibrary('wooden_chest');
+		// loadModelLibrary('tree');
+		// loadModelLibrary('wooden_chest');
 
 		var bmf = ResourceLoader.loadCache('fonts/komika_hand.fnt', hxd.res.BitmapFont);
 		// FPS.init(s2d, hxd.Res.fonts.komika_hand.toFont(), 0);
