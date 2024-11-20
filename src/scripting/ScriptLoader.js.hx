@@ -3,6 +3,7 @@ import js.lib.Promise;
 
 class ScriptLoader {
 	private static var scriptCache:Map<String, Script> = new Map<String, Script>();
+	public static var scriptDirectory:String = './scripts/';
 
 	private static function createInstanceFromModule(m, className) {
 		Syntax.code("
@@ -15,6 +16,7 @@ class ScriptLoader {
 			if (window?.[className]) {
 				return new window[className]();
 			}
+			return m;
 		");
 
 		trace('Error creating script instance from module script: $className');
@@ -24,7 +26,16 @@ class ScriptLoader {
 	private static function _load(scriptName:String, onLoaded:Script->Void):Void {
 		// use a cache buster to force the browser to reload
 		// This should be possible with vite HMR and accept(), but I can't seem to get it to work
-		var scriptPath = './scripts/' + scriptName + '.js' + "?hotreload-cachebuster=" + Std.string(Date.now().getTime());
+
+		/*
+			var scriptPath = Path.join([
+				scriptDirectory,
+				scriptName,
+				'.js',
+				'?hotreload-cachebuster=${Date.now().getTime()}'
+			]);
+		 */
+		var scriptPath = scriptDirectory + '/' + scriptName + '.js' + "?hotreload-cachebuster=" + Std.string(Date.now().getTime());
 
 		// var scriptPath = './scripts/' + scriptName + '.js';
 		// Emit 'unload' event for the old script instance
@@ -42,7 +53,7 @@ class ScriptLoader {
 			// eventEmitter.emit('reload', scriptName);
 			onLoaded(updatedInstance);
 		}).catchError(err -> {
-			trace('Error reloading script: ' + err);
+			trace('Error loading script: ' + err);
 			onLoaded(null);
 		});
 	}
@@ -82,17 +93,17 @@ class ScriptLoader {
 				onLoaded(scriptName, null, null);
 			}
 		});
-		#else	
-			var scriptClass = Type.resolveClass(scriptName);
-			if (scriptClass != null) {
-				var scriptInstance = Type.createInstance(scriptClass, []);
-				onLoaded(scriptName, scriptInstance, null);
-				return;
-			} else {
-				trace("Script " + scriptName + " not found.");
-				onLoaded(scriptName, null, null); // Call the callback with the loaded instance
-				return;
-			}
+		#else
+		var scriptClass = Type.resolveClass(scriptName);
+		if (scriptClass != null) {
+			var scriptInstance = Type.createInstance(scriptClass, []);
+			onLoaded(scriptName, scriptInstance, null);
+			return;
+		} else {
+			trace("Script " + scriptName + " not found.");
+			onLoaded(scriptName, null, null); // Call the callback with the loaded instance
+			return;
+		}
 		#end
 
 		return;

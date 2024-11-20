@@ -23,11 +23,12 @@ class Entity {
 			return;
 		}
 		var instance = new ScriptInstance(event);
+		instance.setContext(ctx);
 		instance.loadScript(scriptName, (instance) -> {
 			// initialized
-			if (instance != null) {
-				instance.ctx.HELLO = "WORLD";
-			}
+			// if (instance != null) {
+			//	instance.ctx.HELLO = "WORLD";
+			// }
 		}, (instance) -> {
 			// loaded
 			if (instance != null) {

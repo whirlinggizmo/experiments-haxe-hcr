@@ -9,6 +9,7 @@ import h3d.col.Bounds;
 import hxd.Math;
 import remotePak.RemotePak;
 
+@:expose
 class MainApp extends hxd.App {
 	var shadow:h3d.pass.DefaultShadowMap;
 	var ground:GroundPlane;
@@ -311,8 +312,27 @@ class MainApp extends hxd.App {
 		trace('Resizing to $w x $h');
 	}
 
+	/*
+
+		// Provide a main entry point for the application.  This normally isn't called, except for testing without a different entry point (Main.hx)
+		static public function main() {
+			#if js
+			RemotePak.initRemotePak();
+			// RemotePak.addPakFromUrl("https://dev.whirlinggizmo.com/testbed/hxiso/res/res.pak", function (pakFile) {
+			RemotePak.addPakFromUrl("res/res.pak", (pakFile) -> {
+				new MainApp();
+			}, (e) -> {
+				trace(e);
+			});
+			#else
+			hxd.Res.initEmbed();
+			new MainApp();
+			#end
+		}
+	 */
 	// Provide a main entry point for the application.  This normally isn't called, except for testing without a different entry point (Main.hx)
-	static public function main() {
+
+	static public function start() {
 		#if js
 		RemotePak.initRemotePak();
 		// RemotePak.addPakFromUrl("https://dev.whirlinggizmo.com/testbed/hxiso/res/res.pak", function (pakFile) {

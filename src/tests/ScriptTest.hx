@@ -5,6 +5,8 @@ import remotePak.RemotePak;
 import js.Browser;
 #end
 
+@:expose
+@:keep
 class ScriptTest {
 	var entity:Entity;
 	final useRemotePak = false;

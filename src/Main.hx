@@ -4,6 +4,7 @@ import js.html.Document;
 #end
 import remotePak.RemotePak;
 
+@:expose
 class Main {
 	public static function ready() {
 		// new tests.ScriptTest();
