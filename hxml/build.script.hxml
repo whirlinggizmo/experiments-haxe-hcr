@@ -1,0 +1,43 @@
+
+#-cp gen/externs
+
+hxml/common.hxml
+
+-lib heaps
+
+# enable debugging
+--debug
+
+#js
+-D source-map-content
+#-D source-map
+-D enable-script-reload
+
+#-D analyzer-optimize
+
+# cpp
+# vscode extension for hxcpp
+#-lib hxcpp-debug-server
+# CLI hxcpp debugger
+#-lib hxcpp
+#-lib hxcpp-debugger
+#-D HXCPP_DEBUGGER 
+
+
+--macro haxe.macro.Compiler.addGlobalMetadata('', '@:expose')
+--macro haxe.macro.Compiler.addGlobalMetadata('', '@:keep')
+
+# remove pacakages that should exist in the main app so the script won't use its local version
+#--macro haxe.macro.Compiler.exclude('', true)
+--macro haxe.macro.Compiler.exclude('h3d', true)
+--macro haxe.macro.Compiler.exclude('h2d', true)
+--macro haxe.macro.Compiler.exclude('hxd', true)
+--macro haxe.macro.Compiler.exclude('tests', true)
+--macro haxe.macro.Compiler.exclude('core', true)
+
+# Scripts derive from core.scripting.Script, so we need to include it
+#--macro haxe.macro.Compiler.include('core.scripting.Script', true)
+
+# remove any dead code
+#-dce full
+

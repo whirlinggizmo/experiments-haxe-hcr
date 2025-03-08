@@ -1,4 +1,4 @@
-import { defineConfig, createLogger } from 'vite';
+import { defineConfig, createLogger, searchForWorkspaceRoot } from 'vite';
 //import { exec } from 'child_process';
 import path from 'path';
 import fs from 'fs';
@@ -21,90 +21,19 @@ if (!keysDir) {
 }
 if (!fs.existsSync(keysDir)) {
   console.log(`${keysDir} does not exist.`);
-  exit(1);
+  process.exit(1);
 }
 const privkeyPath = path.join(keysDir, 'privkey.pem');
 if (!fs.existsSync(privkeyPath)) {
   console.log(`Private key not found: ${privkeyPath}`);
-  exit(1);
+  process.exit(1);
 }
 const certPath = path.join(keysDir, 'cert.pem');
 if (!fs.existsSync(certPath)) {
   console.log(`Certificate not found: ${certPath}`);
-  exit(1);
+  process.exit(1);
 }
 //
-
-/*
-// TODO: separate this into its own plugin file, passing in the values as options
-// Define paths
-const haxeSrcPath = path.resolve(__dirname, 'src');
-const haxeScriptsPath = path.resolve(__dirname, 'scripts');
-const haxeOutputDir = path.resolve(__dirname, 'out');
-const mainJsFile = path.resolve(haxeOutputDir, 'main.js');
-
-const hxmlCommon = path.resolve(__dirname, 'build.common.hxml');
-const hxmlCore = path.resolve(__dirname, 'build.js.hxml');
-
-// Helper to get all Haxe files from a directory (recursively)
-const getHaxeFiles = (dir, fileList = []) => {
-  const files = fs.readdirSync(dir);
-  files.forEach(file => {
-    const filePath = resolve(dir, file);
-    if (fs.statSync(filePath).isDirectory()) {
-      fileList = getHaxeFiles(filePath, fileList);
-    } else if (file.endsWith('.hx')) {
-      fileList.push(filePath);
-    }
-  });
-  return fileList;
-};
-
-// Compile the core files
-function compileCore() {
-  return new Promise((resolve, reject) => {
-    const cmd = `haxe ${hxmlCore}`;
-    //console.log(`Compiling core with command: ${cmd}`);
-    exec(cmd, (err, stdout, stderr) => {
-      if (err) {
-        console.error(`Haxe build error: ${stderr}`);
-        return reject(stderr);
-      } else {
-        console.log(`${stdout}`);
-        return resolve(stdout);
-      }
-    });
-  });
-}
-
-// Compile a single script by using the common hxml and adding the script to the command line
-function compileScript(relativeScriptName) {
-  return new Promise((resolve, reject) => {
-    if (!relativeScriptName || !relativeScriptName.endsWith('.hx')) {
-      return reject('Invalid or missing script name');
-    }
-
-    const className = relativeScriptName.split('/').pop().slice(0, -3);
-    const classPath = relativeScriptName.split('scripts/').pop().slice(0, -3).replace(/\//g, '.');
-    const outputName = relativeScriptName.slice(0, -3) + '.js';
-    const cmd = `haxe ${hxmlCommon} --js ${haxeOutputDir}/${outputName} ${classPath}`;
-
-    //console.log(`Compiling script with command: ${cmd}`);
-    exec(cmd, (err, stdout, stderr) => {
-      if (err) {
-        console.error(`Failed to compile script ${className} (${relativeScriptName}): ${stderr}`);
-        return reject(stderr);
-      }
-      console.log(`Compiled script: ${className} (${relativeScriptName})`);
-      return resolve(stdout);
-    });
-  });
-}
-*/
-
-//const haxeSrcPath = path.resolve(__dirname, 'src');
-//const haxeScriptsPath = path.resolve(__dirname, 'scripts');
-//const haxeOutputDir = path.resolve(__dirname, 'out');
 
 // custom logger to supress the dynamic import warning.  We could modify the js.Lib.import function instead, but that would veer from stock
 const logger = createLogger();
@@ -118,24 +47,30 @@ logger.warn = (message, options) => {
 }
 
 const outputTarget = 'js';
-const srcDir = 'src';
+const srcDirs = ['src', 'hxml'];
 const scriptsDir = 'scripts';
 const outputDir = 'out';
 const outputFile = 'index.js';
-const hxmlScript = 'hxml/script.hxml';
+//const hxmlScript = 'hxml/script.hxml';
+const hxmlScript = 'hxml/build.script.hxml';
 const hxmlMain = 'hxml/main.hxml';
+//const hxmlMain = 'hxml/build.js.hxml';
 
+console.log('Resolved out path:', path.resolve(__dirname, 'out'));
+console.log(searchForWorkspaceRoot(process.cwd()));
 
 export default defineConfig({
   base: '', // defaults to /, '' makes it relative
-  //root: '.', // defaults to process.cwd()
+  root: 'html', // defaults to process.cwd()
+  appType: 'mpa', // don't want history fallback, return 404's  
   define: {
     CONFIG_ENV: JSON.stringify(process.env.CONFIG_ENV)
   },
   customLogger: logger,
   plugins: [
+    
     haxe({
-      sourceDir: srcDir,
+      sourceDirs: srcDirs,
       scriptsDir: scriptsDir,
       outputDir: outputDir,
       outputTarget: outputTarget,
@@ -143,10 +78,11 @@ export default defineConfig({
       hxmlScript: hxmlScript,
       hxmlMain: hxmlMain,
     }),
+    
     viteRestart({
       restart: [
-        'public/**',
-        'res/**/*.fbx'
+        //'public/**',
+        //'res/**/*.fbx'
       ],
       reload: [
         'public/**',
@@ -193,5 +129,11 @@ export default defineConfig({
       key: fs.readFileSync(privkeyPath),
       cert: fs.readFileSync(certPath)
     },
+    sourcemap:true
+  },
+  resolve: {
+    alias: {
+      '/out': path.resolve(__dirname, 'out')
+    }
   },
 });

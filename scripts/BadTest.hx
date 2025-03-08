@@ -1,9 +1,11 @@
-@:expose
+
 class BadTest extends Script {
+
+	function onAttack(args) {
+		log('Attack received with damage: ' + Std.int(args.damage));
+	}
 	function init() {
 		trace("BadTest.init");
-		event.on("attack", function(data) {
-			trace('Attack received with damage: ' + Std.int(data.damage));
-		});
+		addEventListener("attack", "onAttack");
 	}
 }

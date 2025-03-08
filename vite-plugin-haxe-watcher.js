@@ -11,7 +11,8 @@ function getHaxeFiles(dir, fileList = []) {
         const filePath = resolve(dir, file);
         if (fs.statSync(filePath).isDirectory()) {
             fileList = getHaxeFiles(filePath, fileList);
-        } else if (file.endsWith('.hx')) {
+            //console.log(`Found directory: ${filePath}`);
+        } else if (file.endsWith('.hx') && !options.ignoredFiles.some(ignored => file.endsWith(ignored)) && !options.ignoredDirs.some(ignored => filePath.includes(ignored))) {
             fileList.push(filePath);
         }
     });
@@ -102,12 +103,14 @@ export function haxe(opts = {}) {
         outputFile: 'main.js',
         hxmlScript: 'script.hxml',
         hxmlMain: 'main.hxml',
+        ignoredFiles: ['import.hx'],
+        ignoredDirs: ['scripts/externs', 'scripts/unused'],
         ...opts
     };
 
     console.log('Haxe options:', options);
 
-    options.sourceDir = options.sourceDir.replace(/\/$/, '');
+    options.sourceDirs = options.sourceDirs.map(dir => dir.replace(/\/$/, ''));
     options.scriptsDir = options.scriptsDir.replace(/\/$/, '');
     options.outputDir = options.outputDir.replace(/\/$/, '');
 
@@ -117,8 +120,8 @@ export function haxe(opts = {}) {
         apply: 'serve',
         async handleHotUpdate({ file, server, modules }) {
             const relativePath = path.relative(__dirname, file);
-            const isInHaxeSrc = file.startsWith(options.sourceDir) && file.endsWith('.hx');
-            const isInScripts = file.startsWith(options.scriptsDir) && file.endsWith('.hx');
+            const isInHaxeSrcs = options.sourceDirs.some(dir => file.startsWith(dir) && file.endsWith('.hx') &&!options.ignoredFiles.some(ignored => file.endsWith(ignored)) && !options.ignoredDirs.some(ignored => file.includes(ignored))); 
+            const isInScripts = file.startsWith(options.scriptsDir) && file.endsWith('.hx') && !options.ignoredFiles.some(ignored => file.endsWith(ignored) && !options.ignoredDirs.some(ignored => file.includes(ignored)));
             const isHXML = (relativePath == options.hxmlMain) || (relativePath == options.hxmlScript);
             //console.log(`Change detected for: ${relativePath}`);
 
@@ -141,9 +144,19 @@ export function haxe(opts = {}) {
             // We are only interested in .hx files changing, (not the outputted .js files).
             // When a .hx file has changed, compile it.  If it's from the main src group, tell vite the resulting .js module has changed.
             // In the case of scripts, we dispatch a message to the app, notifiying it to reload the compiled script.
-            if (isInHaxeSrc) {
+            if (isInHaxeSrcs) {
                 try {
                     await compileMain();
+                    // Probably need to compile all since the scripts will have already been compiled
+                    // with the previous main's code and won't pick up changes
+                    
+                    // TODO:  be smarter?  Maybe just Script.hx changes?
+                    //if (!relativePath.endsWith('Script.hx')) {
+                    //    await compileMain();
+                    //} else {
+                    //    await compileAll();
+                    //}
+
                     // We don't send a manual full-reload, vite will reload when the main module is updated
                     // console.log(`Sending 'full-reload' message for: ${relativePath}`);
                     //server.ws.send({ type: 'full-reload', path: '*' });
@@ -186,6 +199,7 @@ export function haxe(opts = {}) {
                         path.resolve(__dirname, 'dist') + "/**",
                         // Ignore the output directory, we don't want to watch the .js files (we watch .hx files that generate the .js)
                         path.resolve(__dirname, options.outputDir, options.outputTarget) + "/**",
+                        options.ignoredDirs.map(dir => path.resolve(__dirname, dir) + "/**"),
                     ],
                 };
                 server.watcher.add(options.sourceDir + "/**/*.hx");  // Watch the source directory for changes

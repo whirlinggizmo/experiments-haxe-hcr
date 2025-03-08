@@ -1,0 +1,52 @@
+
+#-D RAYLIB_WEB_ASYNCIFY
+#-lib raylib-hx
+#-lib hxlua
+#-dce no
+#--debug
+#-dce full
+#-main Main
+#-cpp out/wasm
+
+
+
+hxml/common.hxml
+--each
+-D HXCPP_LINK_EMSCRIPTEN_EXT=.js
+-D HXCPP_LINK_MEMORY_GROWTH
+-D HXCPP_LINK_EMSCRIPTEN_MODULARIZE
+-D HXCPP_LINK_EMSCRIPTEN_EXPORT_ES6
+-D HXCPP_LINK_EMSCRIPTEN_FETCH
+-D HXCPP_LINK_EMSCRIPTEN_WEBSOCKET
+
+# generate the list of all script files
+--macro core.macros.ScriptGenerator.generateScriptsList('scripts', 'gen/scripts.hxml')
+
+#--next
+#--cmd echo -n "Building .cpp target..."
+
+-D analyzer-optimize
+-D emscripten
+#--next
+#-lib heaps
+#-lib openfl
+#-lib lime
+
+-D heaps_add_pak_multithreaded
+-cpp out/wasm
+--debug
+--dce no
+
+#--dce full
+
+#-lib hxcpp-debug-server
+#-D HXCPP_DEBUGGER
+
+--main Main
+
+#--define HAXE_OUTPUT_FILE=Main
+# include the scripts as part of the build
+gen/scripts.hxml
+
+--cmd echo "Done!"
+

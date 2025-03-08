@@ -3,17 +3,26 @@
         "zpp_nape",
         "unused"
     ],
+    "haxe.diagnosticsPathFilter": "^\\${workspaceRoot}/(src|scripts)(?!.*?/unused)(/.*)?$",
     "haxe.configurations": [
         [
             "hxml/build.js.hxml"
         ],
         [
-            "hxml/vscode.hxml",
-            "--hl",
-            "out/hl/main.hl"
+            "hxml/vscode.hxml"
         ],
         [
-            "hxml/build.hl.hxml",
+            "hxml/build.hl.hxml"
+        ],
+        [
+            "hxml/build.cpp.hxml"
+        ],
+        [
+            "hxml/main.hxml"
+        ],
+        [
+            "hxml/script.hxml"
         ]
-    ]
+    ],
+    "liveServer.settings.root": "/html"
 }

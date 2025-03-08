@@ -1,17 +1,9 @@
--cp src
--cp scripts
+#--macro core.macros.GlobalLog.injectGlobalLog()
+#--macro "haxe.macro.Compiler.addMetadata('@:expose', ':extends(core.scripting.Script)')"
 
-# for access to Script class without the package namespace 
--cp src/scripting
+--class-path src
+--class-path scripts
 
 -D use-remote-pak
 -D resourcesPath=res
 -D js-es=6
-
-#-D message-reporting=pretty
-
-
-
-
-
-

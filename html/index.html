@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>heaps-iso-test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="icon" type="image/svg" href="img/wg-logo.svg" />
+  <link href="css/index.css" rel="stylesheet" />
+</head>
+
+
+<body class="unselectable" oncontextmenu="return false;">
+  <div id="wrapper">
+    <div id="gameContainer">
+      <!-- <audio id="bgm" loop="true" src="assets/audio/ethernight.mp3"></audio>  -->
+      <!-- <script type="module" src="src/fpsmeter.min.js"> </script> -->
+      <canvas id="renderCanvas"></canvas>
+    </div>
+  </div>
+  <script type="module" src="/out/js/index.js"> </script>
+  <!-- wasm example 
+  <script type="module">
+    // Instead of directly loading Main-debug.js as a <script src="...">,
+    // import it as an ES module so we can call the createModule function.
+    import createModule from '/out/wasm/Main-debug.js';
+  
+    // Initialize the module with locateFile, which tells Emscripten where to find the .wasm file
+    createModule({
+      //locateFile(path) {
+        // Return the correct path for each requested file (e.g., .wasm)
+        // You can adjust the folder or path prefix as needed
+      //  return '/out/wasm/' + path;
+      //}
+    }).then((Module) => {
+      // Module is now loaded and ready to use
+      console.log('Emscripten module loaded:', Module);
+      
+      // You can now call any exported functions, e.g., Module._myExportedFunction()
+    });
+    -->
+  </script>
+</body>
+
+</html>

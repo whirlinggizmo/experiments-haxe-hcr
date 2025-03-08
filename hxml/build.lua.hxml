@@ -3,7 +3,7 @@ hxml/common.hxml
 --each
 
 # generate the list of all script files
---macro ScriptGenerator.generateScriptsList('scripts', 'gen/scripts.hxml')
+--macro core.macros.ScriptGeneratorMacro.generateScriptsList('scripts', 'gen/scripts.hxml')
 
 --next
 --cmd echo -n "Building .lua target..."

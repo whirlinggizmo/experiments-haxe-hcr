@@ -3,19 +3,31 @@ hxml/common.hxml
 --each
 
 # generate the list of all script files
---macro ScriptGenerator.generateScriptsList('scripts', 'gen/scripts.hxml')
+--macro core.macros.ScriptGenerator.generateScriptsList('scripts', 'gen/scripts.hxml')
 
---next
---cmd echo -n "Building .cpp target..."
+#--next
+#--cmd echo -n "Building .cpp target..."
 
---next
+#--next
 #-lib heaps
+-lib openfl
+-lib lime
+
 -D heaps_add_pak_multithreaded
 -cpp out/cpp
-#--debug
+--debug
+--dce no
+
 #--dce full
+
 -lib hxcpp-debug-server
+#-D HXCPP_DEBUGGER
+
 --main Main
+
+#--define HAXE_OUTPUT_FILE=Main
 # include the scripts as part of the build
 gen/scripts.hxml
+
+--cmd echo "Done!"
 

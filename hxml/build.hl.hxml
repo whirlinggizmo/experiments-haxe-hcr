@@ -2,17 +2,26 @@ hxml/common.hxml
 --each
 
 # generate the list of all script files
---macro ScriptGenerator.generateScriptsList('scripts', 'gen/scripts.hxml')
+--cmd echo -n "Building scripts list... "
+--macro core.macros.ScriptCompiler.generateScriptsList('scripts', 'gen/scripts.hxml')
+--cmd echo "OK"
 
-#--next
-#--cmd echo "Building .hl target..."
+--next
+--cmd echo "Building .hl target..."
 
-#--next
+--next
 -D heaps_add_pak_multithreaded
 -lib hlsdl
 -lib heaps
---main Main
+
+--main tests.heaps.Main
+
+--dce full
+#--dce no
+#--debug
+
 -hl out/hl/main.hl
+
 
 # include the script files as part of the build
 gen/scripts.hxml

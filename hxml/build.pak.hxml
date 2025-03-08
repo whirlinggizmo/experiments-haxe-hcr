@@ -1,7 +1,12 @@
+# remove the res.pak file 
+-cmd rm html/public/res/res.pak
+
+--next
+
 -main hxd.fmt.pak.Build
 -lib heaps
 -hl hxd.fmt.pak.Build.hl
--cmd hl hxd.fmt.pak.Build.hl -diff -res res -out public/res/res -exclude blend,blend1,blend2
+-cmd hl hxd.fmt.pak.Build.hl -diff -res res -out html/public/res/res -exclude blend,blend1,blend2
 
-# Generates a .pak file from the res folder, placing it in public/res/res.pak
+# Generates a .pak file from the res folder, placing it in html/public/res/res.pak
 # Usage: haxe hxml/build.pak.hxml 

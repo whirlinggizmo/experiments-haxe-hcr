@@ -48,9 +48,10 @@
                 "--disable-infobars",
                 "--show-fps-counter",
             ],
-            "webRoot": "${workspaceRoot}",
+            "webRoot": "${workspaceRoot}/html",
             "sourceMaps": true,
-            "internalConsoleOptions": "openOnSessionStart"
+            "internalConsoleOptions": "openOnSessionStart",
+            "pauseForSourceMap": true
         },
         {
             "name": "Javascript (dist)",
@@ -93,7 +94,26 @@
             "name": "HXCPP",
             "type": "hxcpp",
             "request": "launch",
-            "program": "${workspaceFolder}/out/cpp/Main-debug"
+            "program": "${workspaceFolder}/out/cpp/Main-debug",
+            "preLaunchTask": "kill Main-debug",
+            "postDebugTask": "kill Main-debug"
+        },
+        {
+            "name": "Javascript (remote)",
+            "request": "launch",
+            "type": "chrome",
+            "url": "https://localhost:4444",
+            "userDataDir": "${workspaceFolder}/.vscode/vscode-chrome-debug-userdatadir",
+            "linux": {
+                "runtimeExecutable": "/usr/bin/brave-browser"
+            },
+            "windows": {
+                "runtimeExecutable": "C:\\Program Files\\BraveSoftware\\Brave-Browser\\Application\\brave.exe",
+            },
+            "webRoot": "${workspaceRoot}/html",
+            "sourceMaps": true,
+            "internalConsoleOptions": "openOnSessionStart",
+            "pauseForSourceMap": true
         }
     ]
 }

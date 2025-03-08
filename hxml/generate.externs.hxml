@@ -1,0 +1,23 @@
+-cp src
+-cp externs
+-lib heaps
+-lib domkit
+-lib castle
+-lib hxbit
+-lib hlsdl
+
+--macro include("h3d", true, null, null, false)
+--macro include("h2d", false, null, null, false)
+--macro include("hxd", false, null, null, false)
+--macro include("hxd.fmt", true, null, null, false)
+
+
+--macro core.macros.ExternGenerator.generate("gen/externs", "h3d")
+--macro core.macros.ExternGenerator.generate("gen/externs", "h2d")
+--macro core.macros.ExternGenerator.generate("gen/externs", "hxd")
+
+-dce no
+
+-main Empty
+-hl temp/temp.js
+--no-output

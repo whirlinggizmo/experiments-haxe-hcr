@@ -1,37 +1,34 @@
 
 hxml/common.hxml
+
 --each
 
 # generate the list of all script files
---macro ScriptGenerator.generateScriptsList('scripts', 'gen/scripts.hxml')
+--cmd echo -n "Building scripts list... "
+--macro core.macros.ScriptCompiler.generateScriptsList('scripts', 'gen/scripts.hxml')
+--cmd echo "OK"
 
-#--next
---cmd echo -n "Building .js target..."
+--next
+--cmd echo -n "Building .js target... "
 
-#--next
+--next
 -lib heaps
 
-# break out the build into separate files
-#-lib genes
-#-D genes.unchanged_no_rewrite
-
 --dce full
---main Main
+#--dce no
+#--debug
+#-D source-map
+#-D source-map-content
+
+-main tests.heaps.Main
 
 -js out/js/index.js
-
-#debugging
-#-D source-map-content
-#-D source-map
-#--debug
-#end debugging
-
 
 # include the scripts as part of the build
 gen/scripts.hxml
 
 #--next
-#--cmd echo "OK"
+--cmd echo "OK"
 
 #--next
 --cmd echo "Build complete."

@@ -1,31 +1,63 @@
-@:expose
+
+//@:expose 
+
+
 class Test extends Script {
 	/*
 		function onInit() {
 			log("Test.init!");
 		}
 	 */
-	function onLoad() {
-		log("Test.load");
-		log(ctx); // testing context:  first time should have "HELLO" (set by ScriptInstance), second should have 'mytest' and 'foo' (set by onUnload)
-		log("CHANGE ME TO SEE HOTRELOAD (must be running vite and have enable-script-reload + debug in main.hxml)");
-		event.on("attack", function(data) {
-			log('Attack received with bar: ' + Std.int(data.damage));
-		});
+	 
+
+	var thing:String;
+
+	function onAttack(args) {
+		log('Attack received with damage: ${Std.string(args.damage)}');
+	} 
+
+	function onOver(args) {
+		log("ON OVER");
 	}
 
-	function onUnload() {
-		log("Test.unload");
-		ctx.mytest = "test"; // testing saving context before unload
-		ctx.foo = "bar";
+	override function onLoad() {
+		log("Test.load");
+		thing = "HELLO";
+		addEventListener("attack", "onAttack");
+		addEventListener("onOver", "onOver");
 	}
-	/*
-		function onDestroy() {
-			log("Test.destroy");
+
+	override function onReload() {
+		thing = ctx.stashed.thing;
+		log("after reload: " + thing);	
+		//event.on("attack", this.onAttack);
+		//log(event.getListeners("attack"));
+
+		//event.on("onOver", this.onOver);
+	}
+
+	function onUpdate(deltaTimeMS:Float) {
+		log("Test.updated");
+	}
+
+	override function onUnload() {
+		log("Test.unload");
+		ctx.stashed = {
+			thing: "NICE"
 		}
-	 */
-	// event.on("tick", function(data) {
-	// log('Tick received on Test: ' + data);
-	//	});
-	// }
+	}
+
+	function updateSprite(sprite, currentTimeSec:Float, deltaTimeMS:Float):Void {
+		if (sprite.x > 800) sprite.setPosition(0, 300);
+		sprite.rotate((360/1000) * deltaTimeMS);
+		sprite.move(0.1*deltaTimeMS, 0);
+		//sprite.rotation += (360/1000) * deltaTimeMS;
+		//log("Rotation: " + sprite.rotation);
+		/*
+			log("Sprite Object: " + sprite);
+			log("Sprite Type: " + Type.getClass(sprite));
+			log("Sprite has rotation: " + Reflect.hasField(sprite, "rotation"));
+			log("Sprite.rotation value: " + Reflect.field(sprite, "rotation"));
+			*/
+	}
 }
